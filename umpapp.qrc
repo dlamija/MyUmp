@@ -1,2 +1,7 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/AppIcon.icns</file>
+        <file>Resources/IMG_2518.JPG</file>
+        <file>Resources/logoUMP.png</file>
+    </qresource>
+</RCC>

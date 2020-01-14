@@ -2,6 +2,7 @@
 #define UMPSETTING_H
 
 #include <QDialog>
+#include "userprofile.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class UMPSetting; }
@@ -12,10 +13,12 @@ class UMPSetting : public QDialog
     Q_OBJECT
 
 public:
-    UMPSetting(QWidget *parent = nullptr);
+    UMPSetting(UserProfile *user, QWidget *parent = nullptr);
     ~UMPSetting();
 
 private:
     Ui::UMPSetting *ui;
+    UserProfile *user;
+    void setSettingUI();
 };
 #endif // UMPSETTING_H
