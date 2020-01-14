@@ -11,13 +11,20 @@ class MyUmp : public QWidget
     Q_OBJECT
 public:
     explicit MyUmp(QWidget *parent = nullptr);
+    void writeSettings();
 
 private:
     UserProfile *user;
     UMPSetting *umpsetting;
 
-
     void readSettings();
+    void createActions();
+    void createTrayIcon();
+    void setIcon();
+
+public slots:
+
+
 signals:
 
 };

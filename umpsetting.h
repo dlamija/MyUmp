@@ -16,6 +16,11 @@ public:
     UMPSetting(UserProfile *user, QWidget *parent = nullptr);
     ~UMPSetting();
 
+private slots:
+    void on_pushButtonSave_clicked();
+
+    void on_pushButtonDelete_clicked();
+
 private:
     Ui::UMPSetting *ui;
     UserProfile *user;

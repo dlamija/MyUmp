@@ -5,10 +5,16 @@
 MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
 {
     user = new UserProfile();
-    umpsetting = new UMPSetting(user, this);
     this->readSettings();
+    umpsetting = new UMPSetting(user, this);
 
-    qDebug() << user->userName << user->isCheckedIn << endl;
+    //create systray item
+    createActions();
+    createTrayIcon();
+    setIcon();
+
+
+
     if (user->SettingSaved){
         umpsetting->show();
     } else {
@@ -33,4 +39,36 @@ void MyUmp::readSettings()
             user->disableOutside = settings.value("week").toBool();
         settings.endGroup();
     }
+}
+
+void MyUmp::createActions()
+{
+
+}
+
+void MyUmp::createTrayIcon()
+{
+
+}
+
+void MyUmp::setIcon()
+{
+
+}
+
+void MyUmp::writeSettings()
+{
+    QSettings settings;
+
+    settings.beginGroup("Login");
+        settings.setValue("username",user->userName.toUtf8().toBase64() );
+        settings.setValue("password", user->userPass.toUtf8().toBase64());
+    settings.endGroup();
+    settings.beginGroup("Date");
+        settings.setValue("day",user->autoCheckIn );
+        settings.setValue("month",user->disableCheckOut );
+        settings.setValue("week",user->disableOutside);
+     settings.endGroup();
+    settings.sync();
+
 }
