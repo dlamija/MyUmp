@@ -13,7 +13,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("pakciktua.org");
     QCoreApplication::setApplicationName("UMPApps");
 
+    QApplication::setQuitOnLastWindowClosed(false);
+
     w = new MyUmp(&window);
-    w->show();
+    //w->show();
     return a.exec();
 }

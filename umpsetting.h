@@ -18,12 +18,14 @@ public:
 
 private slots:
     void on_pushButtonSave_clicked();
-
     void on_pushButtonDelete_clicked();
 
 private:
     Ui::UMPSetting *ui;
     User *user;
     void setSettingUI();
+
+signals:
+    void valueChanged();
 };
 #endif // UMPSETTING_H

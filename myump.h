@@ -13,7 +13,7 @@ class MyUmp : public QWidget
     Q_OBJECT
 public:
     explicit MyUmp(QWidget *parent = nullptr);
-    void writeSettings();
+
 
 private:
     User *user;
@@ -29,19 +29,20 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 
+    bool isCheckedIn;
+
     void readSettings();
     void createActions();
     void createTrayIcon();
     void setIcon();
 
 public slots:
+    void writeSettings();
+    void checkInFinished(QNetworkReply *reply);
+    void checkOutFinished(QNetworkReply *reply);
+
 
 private slots:
-    void loginEcomm();
-    void loginKalam();
-    void checkInUMP();
-    void checkOutUMP();
-    void checkMemo();
     void configureSetting();
 signals:
 

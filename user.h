@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+class QNetworkReply;
+class QSslError;
+
 class User : public QObject
 {
     Q_OBJECT
@@ -18,7 +21,24 @@ public:
     bool autoCheckIn = false;
     bool disableCheckOut = false;
     bool disableOutside = true;
+
+private slots:
+ //   void onSslError(QNetworkReply *r, QList<QSslError> l);
+    void checkInFinished(QNetworkReply *reply);
+    void checkOutFinished(QNetworkReply *reply);
+    //void kalamLogined(QNetworkReply *reply);
+    //void checkIPChanged();
+
+public slots:
+    void loginEcomm();
+    void loginKalam();
+    void checkInUMP();
+    void checkOutUMP();
+    void checkMemo();
+
 signals:
+    void checkin(QNetworkReply *reply);
+    void checkout(QNetworkReply *reply);
 
 };
 

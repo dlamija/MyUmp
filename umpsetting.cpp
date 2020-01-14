@@ -1,4 +1,5 @@
 #include "umpsetting.h"
+#include "myump.h"
 #include "ui_umpsetting.h"
 #include <QDebug>
 #include <QSettings>
@@ -49,6 +50,7 @@ void UMPSetting::on_pushButtonSave_clicked()
     user->disableCheckOut = ui->checkBoxCheckOutBefore4pm->checkState();
     user->disableOutside = ui->checkBoxDisableOutside->checkState();
     UMPSetting::hide();
+    this->valueChanged();
 }
 
 void UMPSetting::on_pushButtonDelete_clicked()

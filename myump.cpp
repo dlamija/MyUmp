@@ -5,6 +5,8 @@
 #include <QCoreApplication>
 #include <QMenu>
 #include <QSystemTrayIcon>
+#include <QNetworkReply>
+#include <QTextDocument>
 
 
 MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
@@ -13,11 +15,16 @@ MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
     this->readSettings();
     umpsetting = new UMPSetting(user, this);
 
+    //create connection
+    connect(umpsetting,&UMPSetting::valueChanged,this, &MyUmp::writeSettings);
+    connect(user, &User::checkin, this, &MyUmp::checkInFinished);
+    connect(user, &User::checkout, this, &MyUmp::checkOutFinished);
+
     //create systray item
     this->createActions();
     this->createTrayIcon();
-
-
+    this->setIcon();
+    trayIcon->show();
 
 
     if (user->SettingSaved){
@@ -49,17 +56,17 @@ void MyUmp::readSettings()
 void MyUmp::createActions()
 {
     loginEcommAction = new QAction(tr("&Log In E-Comm"), this);
-    connect(loginEcommAction, &QAction::triggered, this, &MyUmp::loginEcomm);
+    connect(loginEcommAction, &QAction::triggered, user, &User::loginEcomm);
 
     loginKalamAction = new QAction(tr("Login &Kalam"),this);
-    connect(loginKalamAction, &QAction::triggered, this, &MyUmp::loginKalam);
+    connect(loginKalamAction, &QAction::triggered, user, &User::loginKalam);
 
     checkInAction = new QAction(tr("Check &In"), this);
-    connect(checkInAction, &QAction::triggered, this, &MyUmp::checkInUMP);
+    connect(checkInAction, &QAction::triggered, user, &User::checkInUMP);
     checkOutAction = new QAction(tr("Check &Out"), this);
-    connect(checkOutAction, &QAction::triggered, this, &MyUmp::checkOutUMP);
+    connect(checkOutAction, &QAction::triggered, user, &User::checkOutUMP);
     checkMemoAction = new QAction(tr("Check &Memo"), this);
-    connect(checkMemoAction, &QAction::triggered, this, &MyUmp::checkMemo);
+    connect(checkMemoAction, &QAction::triggered, user, &User::checkMemo);
 
     configureAction = new QAction(tr("&Configure"),this);
     connect(configureAction, &QAction::triggered, this, &MyUmp::configureSetting);
@@ -71,7 +78,7 @@ void MyUmp::createActions()
 
 void MyUmp::createTrayIcon()
 {
-    trayIconMenu = new QMenu(umpsetting);
+    trayIconMenu = new QMenu(this);
     //trayIconMenu->addSeparator();
     trayIconMenu->addAction(loginEcommAction);
     trayIconMenu->addAction(checkMemoAction);
@@ -84,8 +91,8 @@ void MyUmp::createTrayIcon()
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
 
-    this->setIcon();
-    trayIcon = new QSystemTrayIcon(umpsetting);
+
+    trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);
 }
 
@@ -117,6 +124,61 @@ void MyUmp::writeSettings()
         settings.setValue("month",user->disableCheckOut );
         settings.setValue("week",user->disableOutside);
      settings.endGroup();
-    settings.sync();
+     settings.sync();
+}
+
+void MyUmp::checkInFinished(QNetworkReply *reply)
+{
+    qDebug() << "In finish "<< endl;
+    if(reply->error())
+    {
+        qDebug() << "ERROR!";
+        qDebug() << reply->errorString();
+    }
+    else
+    {
+        QString strdata = reply->readAll();
+        QTextDocument doc;
+        doc.setHtml(strdata);
+        strdata = doc.toPlainText().remove(QRegExp("[\n\t\r]")).trimmed();
+        if (strdata.mid(1,1) == ' '){
+            strdata = strdata.mid(2,strdata.length());
+        }
+
+        QSystemTrayIcon::MessageIcon msgIcon = QSystemTrayIcon::MessageIcon(1);
+
+        if (strdata == "Check in failed!."){
+            qDebug() << strdata;
+            trayIcon->showMessage(QCoreApplication::applicationName() + ": Check In",
+                                  "Dear " +user->userName +", " +strdata,
+                                  msgIcon, 5 * 1000);
+        } else if (strdata.contains("Check-in failed.")) {
+            int indexN = strdata.indexOf("Check-in failed.",0,Qt::CaseSensitive);
+            QString name = strdata.mid(1,indexN-1).trimmed();
+            strdata = strdata.mid(indexN, strdata.length());
+            qDebug() << "Check-in failed. : " +strdata;
+
+            trayIcon->showMessage(name, strdata, msgIcon, 5 * 1000);
+            isCheckedIn = true;
+            checkInAction->setEnabled(false);
+            checkOutAction->setEnabled(true);
+        } else {
+            int indexN = strdata.indexOf("Check-in successful",0,Qt::CaseSensitive);
+            QString name = strdata.mid(1,indexN-1).trimmed();
+            strdata = strdata.mid(indexN, strdata.length());
+            qDebug() << "Check-in successful : " +strdata;
+
+            trayIcon->showMessage(name, strdata, msgIcon, 5 * 1000);
+            isCheckedIn = true;
+            checkInAction->setEnabled(false);
+            checkOutAction->setEnabled(true);
+
+        }
+        reply->deleteLater();
+    }
+}
+
+void MyUmp::checkOutFinished(QNetworkReply *reply)
+{
 
 }
