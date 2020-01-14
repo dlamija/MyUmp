@@ -2,9 +2,11 @@
 #define MYUMP_H
 
 #include <QWidget>
-#include "userprofile.h"
+#include "user.h"
 #include "umpsetting.h"
 
+class QSystemTrayIcon;
+class QMenu;
 
 class MyUmp : public QWidget
 {
@@ -14,8 +16,18 @@ public:
     void writeSettings();
 
 private:
-    UserProfile *user;
+    User *user;
     UMPSetting *umpsetting;
+
+    QAction *loginEcommAction;
+    QAction *loginKalamAction;
+    QAction *checkInAction;
+    QAction *checkOutAction;
+    QAction *checkMemoAction;
+    QAction *configureAction;
+    QAction *quitAction;
+    QSystemTrayIcon *trayIcon;
+    QMenu *trayIconMenu;
 
     void readSettings();
     void createActions();
@@ -24,7 +36,13 @@ private:
 
 public slots:
 
-
+private slots:
+    void loginEcomm();
+    void loginKalam();
+    void checkInUMP();
+    void checkOutUMP();
+    void checkMemo();
+    void configureSetting();
 signals:
 
 };

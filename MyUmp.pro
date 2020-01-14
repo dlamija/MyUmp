@@ -19,12 +19,12 @@ SOURCES += \
     main.cpp \
     myump.cpp \
     umpsetting.cpp \
-    userprofile.cpp
+    user.cpp
 
 HEADERS += \
     myump.h \
     umpsetting.h \
-    userprofile.h
+    user.h
 
 FORMS += \
     umpsetting.ui

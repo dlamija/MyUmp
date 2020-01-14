@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QSettings>
 
-UMPSetting::UMPSetting(UserProfile *user, QWidget *parent)
+UMPSetting::UMPSetting(User *user, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::UMPSetting)
 {

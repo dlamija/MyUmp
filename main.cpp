@@ -14,6 +14,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("UMPApps");
 
     w = new MyUmp(&window);
-
+    w->show();
     return a.exec();
 }

@@ -3,11 +3,11 @@
 
 #include <QObject>
 
-class UserProfile : public QObject
+class User : public QObject
 {
     Q_OBJECT
 public:
-    explicit UserProfile(QObject *parent = nullptr);
+    explicit User(QObject *parent = nullptr);
     QString userName;
     QString userPass;
 
