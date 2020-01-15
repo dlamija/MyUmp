@@ -65,7 +65,12 @@ void UMPSetting::on_pushButtonDelete_clicked()
     settings.beginGroup("Login");
         settings.remove("");
     settings.endGroup();
-
+    ui->pushButtonSave->setDisabled(true);
     this->setSettingUI();
     //UMPSetting::hide();
+}
+
+void UMPSetting::on_username_textChanged(const QString &arg1)
+{
+    ui->pushButtonSave->setEnabled(true);
 }

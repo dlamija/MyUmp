@@ -15,21 +15,6 @@ User::User(QObject *parent) : QObject(parent)
 
 }
 
-//void User::onSslError(QNetworkReply *r, QList<QSslError> l)
-//{
-//    l.size();
-//    r->ignoreSslErrors();
-//}
-
-void User::checkInFinished(QNetworkReply *reply)
-{
-    this->checkin(reply);
-}
-
-void User::checkOutFinished(QNetworkReply *reply)
-{
-    this->checkout(reply);
-}
 
 void User::loginEcomm()
 {
@@ -84,10 +69,10 @@ void User::checkInUMP()
     QNetworkRequest networkRequest(url);
 
     connect(networkManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                this, SLOT(onSslError(QNetworkReply*, QList<QSslError>)));
+                this, SIGNAL(onSslError(QNetworkReply*, QList<QSslError>)));
 
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(checkInFinished(QNetworkReply*)));
+                this, SIGNAL(checkin(QNetworkReply*)));
 
     networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     networkManager->post(networkRequest, urlQuery.toString(QUrl::FullyEncoded).toUtf8());
@@ -108,9 +93,9 @@ void User::checkOutUMP()
     QNetworkRequest networkRequest(url);
 
     connect(networkManager, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)),
-                this, SLOT(onSslError(QNetworkReply*, QList<QSslError>)));
+                this, SIGNAL(onSslError(QNetworkReply*, QList<QSslError>)));
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),
-                this, SLOT(checkOutFinished(QNetworkReply*)));
+                this, SIGNAL(checkout(QNetworkReply*)));
 
     networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     networkManager->post(networkRequest, urlQuery.toString(QUrl::FullyEncoded).toUtf8());

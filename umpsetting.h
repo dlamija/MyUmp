@@ -20,6 +20,8 @@ private slots:
     void on_pushButtonSave_clicked();
     void on_pushButtonDelete_clicked();
 
+    void on_username_textChanged(const QString &arg1);
+
 private:
     Ui::UMPSetting *ui;
     User *user;

@@ -23,9 +23,7 @@ public:
     bool disableOutside = true;
 
 private slots:
- //   void onSslError(QNetworkReply *r, QList<QSslError> l);
-    void checkInFinished(QNetworkReply *reply);
-    void checkOutFinished(QNetworkReply *reply);
+
     //void kalamLogined(QNetworkReply *reply);
     //void checkIPChanged();
 
@@ -39,6 +37,7 @@ public slots:
 signals:
     void checkin(QNetworkReply *reply);
     void checkout(QNetworkReply *reply);
+    void onSslError(QNetworkReply *r, QList<QSslError> l);
 
 };
 

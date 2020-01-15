@@ -16,6 +16,5 @@ int main(int argc, char *argv[])
     QApplication::setQuitOnLastWindowClosed(false);
 
     w = new MyUmp(&window);
-    //w->show();
     return a.exec();
 }

@@ -7,6 +7,7 @@
 
 class QSystemTrayIcon;
 class QMenu;
+class QSslError;
 
 class MyUmp : public QWidget
 {
@@ -19,17 +20,18 @@ private:
     User *user;
     UMPSetting *umpsetting;
 
-    QAction *loginEcommAction;
-    QAction *loginKalamAction;
-    QAction *checkInAction;
-    QAction *checkOutAction;
-    QAction *checkMemoAction;
+    QAction *login_action;
+    QAction *loginkalam_action;
+    QAction *checkin_action;
+    QAction *checkout_action;
+    QAction *checkmemo_action;
     QAction *configureAction;
     QAction *quitAction;
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 
     bool isCheckedIn;
+    bool isInUMP;
 
     void readSettings();
     void createActions();
@@ -38,6 +40,7 @@ private:
 
 public slots:
     void writeSettings();
+    void onSslError(QNetworkReply *r, QList<QSslError> l);
     void checkInFinished(QNetworkReply *reply);
     void checkOutFinished(QNetworkReply *reply);
 
