@@ -8,13 +8,14 @@
 class QSystemTrayIcon;
 class QMenu;
 class QSslError;
+class QTimer;
 
 class MyUmp : public QWidget
 {
     Q_OBJECT
 public:
     explicit MyUmp(QWidget *parent = nullptr);
-
+    QTimer *timer;
 
 private:
     User *user;
@@ -30,6 +31,10 @@ private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayIconMenu;
 
+    static const QString logUMPNETUrl;
+    static const QString umpHostUrl;
+    static const QString umpHostIpAddress;
+
     bool isCheckedIn;
     bool isInUMP;
 
@@ -37,6 +42,7 @@ private:
     void createActions();
     void createTrayIcon();
     void setIcon();
+    bool lookupUMPDNS();
 
 public slots:
     void writeSettings();
@@ -47,6 +53,8 @@ public slots:
 
 private slots:
     void configureSetting();
+    void checkIPChanged();
+
 signals:
 
 };

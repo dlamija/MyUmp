@@ -8,7 +8,12 @@
 #include <QNetworkReply>
 #include <QTextDocument>
 #include <QSslError>
+#include <QHostInfo>
+#include <QTimer>
 
+const QString MyUmp::logUMPNETUrl = QString("http://1.1.1.2/ac_portal/login.php");
+const QString MyUmp::umpHostUrl = QString("ump.edu.my");
+const QString MyUmp::umpHostIpAddress = QString("172.16.33.26");
 
 MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
 {
@@ -34,6 +39,22 @@ MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
     if (!user->SettingSaved){
         umpsetting->show();
     }
+
+    if (user->autoCheckIn){
+        if (isInUMP || !user->disableOutside){
+            user->checkInUMP();
+        }
+    }
+
+    //Periodic check location based on dns record
+    // create timer
+    timer = new QTimer(this);
+
+    // setup signal and slot
+    connect(timer, SIGNAL(timeout()), this, SLOT(checkIPChanged()));
+    // msec
+    timer->start(15*60000);
+    //timer->start(1*60000);
 
 }
 
@@ -110,10 +131,33 @@ void MyUmp::setIcon()
     trayIcon->setToolTip(tr("UMP"));
 }
 
+bool MyUmp::lookupUMPDNS()
+{
+    QHostInfo umpHost = QHostInfo::fromName(umpHostUrl);    //QString("ump.edu.my");
+    QHostAddress *umpIPAddress = new QHostAddress(umpHostIpAddress);      //QString("172.16.33.26");
+    if(umpHost.addresses().isEmpty()){                      // No Network
+        return false;
+    }
+
+    QHostAddress getHost = umpHost.addresses().first();
+    return  (getHost.toIPv4Address()==umpIPAddress->toIPv4Address());
+}
 
 void MyUmp::configureSetting()
 {
     umpsetting->show();
+}
+
+void MyUmp::checkIPChanged()
+{
+    isInUMP = lookupUMPDNS();
+    if (isInUMP && !isCheckedIn ){
+        user->checkInUMP();
+        //qDebug() << "in ump : done check in";
+    }else {
+        //qDebug() << "not in ump or already check in";
+    }
+
 }
 
 void MyUmp::writeSettings()
