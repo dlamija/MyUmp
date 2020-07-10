@@ -51,6 +51,11 @@ void User::loginEcomm()
     }
 }
 
+void User::fixJavaIMS()
+{
+
+}
+
 void User::loginKalam()
 {
 

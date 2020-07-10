@@ -2,9 +2,10 @@
 #define USERPROFILE_H
 
 #include <QObject>
+#include <QSslError>
 
 class QNetworkReply;
-class QSslError;
+
 
 class User : public QObject
 {
@@ -29,6 +30,7 @@ private slots:
 
 public slots:
     void loginEcomm();
+    void fixJavaIMS();
     void loginKalam();
     void checkInUMP();
     void checkOutUMP();

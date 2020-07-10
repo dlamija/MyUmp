@@ -28,6 +28,6 @@ private:
     void setSettingUI();
 
 signals:
-    void valueChanged();
+    void save_delete(bool save);
 };
 #endif // UMPSETTING_H

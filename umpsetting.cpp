@@ -49,8 +49,9 @@ void UMPSetting::on_pushButtonSave_clicked()
     user->autoCheckIn = ui->checkBoxCheckINAuto->checkState();
     user->disableCheckOut = ui->checkBoxCheckOutBefore4pm->checkState();
     user->disableOutside = ui->checkBoxDisableOutside->checkState();
+    this->save_delete(true);
+    qDebug() << "After save";
     UMPSetting::hide();
-    this->valueChanged();
 }
 
 void UMPSetting::on_pushButtonDelete_clicked()
@@ -61,13 +62,10 @@ void UMPSetting::on_pushButtonDelete_clicked()
     user->disableCheckOut = false;
     user->disableOutside = false;
 
-    QSettings settings;
-    settings.beginGroup("Login");
-        settings.remove("");
-    settings.endGroup();
+
     ui->pushButtonSave->setDisabled(true);
     this->setSettingUI();
-    //UMPSetting::hide();
+    this->save_delete(false);
 }
 
 void UMPSetting::on_username_textChanged(const QString &arg1)

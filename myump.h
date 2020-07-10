@@ -19,10 +19,11 @@ public:
 
 private:
     User *user;
-    UMPSetting *umpsetting;
+    UMPSetting *userSetting;
 
     QAction *login_action;
     QAction *loginkalam_action;
+    QAction *fix_javaIMS;
     QAction *checkin_action;
     QAction *checkout_action;
     QAction *checkmemo_action;
@@ -45,7 +46,7 @@ private:
     bool lookupUMPDNS();
 
 public slots:
-    void writeSettings();
+    void writeSettings(bool save_delete);
     void onSslError(QNetworkReply *r, QList<QSslError> l);
     void checkInFinished(QNetworkReply *reply);
     void checkOutFinished(QNetworkReply *reply);

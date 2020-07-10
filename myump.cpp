@@ -19,9 +19,9 @@ MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
 {
     user = new User();
     this->readSettings();
-    umpsetting = new UMPSetting(user, this);
+    userSetting = new UMPSetting(user, this);
     //create connection
-    connect(umpsetting,&UMPSetting::valueChanged,this, &MyUmp::writeSettings);
+    connect(userSetting,&UMPSetting::save_delete,this, &MyUmp::writeSettings);
     connect(user, &User::checkin, this, &MyUmp::checkInFinished);
     connect(user, &User::checkout, this, &MyUmp::checkOutFinished);
     connect(user, &User::onSslError, this, &MyUmp::onSslError);
@@ -37,7 +37,7 @@ MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
 
 
     if (!user->SettingSaved){
-        umpsetting->show();
+        userSetting->show();
     }
 
     if (user->autoCheckIn){
@@ -87,6 +87,9 @@ void MyUmp::createActions()
     loginkalam_action = new QAction(tr("Login &Kalam"),this);
     connect(loginkalam_action, &QAction::triggered, user, &User::loginKalam);
 
+    fix_javaIMS = new QAction(tr("Fix &Java/IMS"),this);
+    connect(fix_javaIMS, &QAction::triggered, user, &User::fixJavaIMS );
+
     checkin_action = new QAction(tr("Check &In"), this);
     connect(checkin_action, &QAction::triggered, user, &User::checkInUMP);
     checkout_action = new QAction(tr("Check &Out"), this);
@@ -108,6 +111,7 @@ void MyUmp::createTrayIcon()
     //trayIconMenu->addSeparator();
     trayIconMenu->addAction(login_action);
     trayIconMenu->addAction(checkmemo_action);
+    trayIconMenu->addAction(fix_javaIMS);
     //trayIconMenu->addAction(loginKalamAction);
     trayIconMenu->addSeparator();
     trayIconMenu->addAction(checkin_action);
@@ -126,9 +130,9 @@ void MyUmp::setIcon()
 {
     QIcon icon = QIcon(":/Resources/logoUMP.png");
     trayIcon->setIcon(icon);
-    setWindowIcon(icon);
+    this->setWindowIcon(icon);
 
-    trayIcon->setToolTip(tr("UMP"));
+    trayIcon->setToolTip(tr("EComm"));
 }
 
 bool MyUmp::lookupUMPDNS()
@@ -145,7 +149,7 @@ bool MyUmp::lookupUMPDNS()
 
 void MyUmp::configureSetting()
 {
-    umpsetting->show();
+    userSetting->show();
 }
 
 void MyUmp::checkIPChanged()
@@ -153,27 +157,37 @@ void MyUmp::checkIPChanged()
     isInUMP = lookupUMPDNS();
     if (isInUMP && !isCheckedIn ){
         user->checkInUMP();
-        //qDebug() << "in ump : done check in";
+        qDebug() << "in ump : done check in";
     }else {
-        //qDebug() << "not in ump or already check in";
+        qDebug() << "not in ump or already check in";
     }
 
 }
 
-void MyUmp::writeSettings()
+void MyUmp::writeSettings(bool save_delete)
 {
     QSettings settings;
+    qDebug() << "save or delete" << save_delete << endl;
+    if (save_delete){
+        settings.beginGroup("Login");
+            settings.setValue("username",user->userName.toUtf8().toBase64() );
+            settings.setValue("password", user->userPass.toUtf8().toBase64());
+        settings.endGroup();
+        settings.beginGroup("Date");
+            settings.setValue("day",user->autoCheckIn );
+            settings.setValue("month",user->disableCheckOut );
+            settings.setValue("week",user->disableOutside);
+         settings.endGroup();
 
-    settings.beginGroup("Login");
-        settings.setValue("username",user->userName.toUtf8().toBase64() );
-        settings.setValue("password", user->userPass.toUtf8().toBase64());
-    settings.endGroup();
-    settings.beginGroup("Date");
-        settings.setValue("day",user->autoCheckIn );
-        settings.setValue("month",user->disableCheckOut );
-        settings.setValue("week",user->disableOutside);
-     settings.endGroup();
-     settings.sync();
+    } else {
+        settings.beginGroup("Login");
+            settings.remove("");
+        settings.endGroup();
+        settings.beginGroup("Date");
+            settings.remove("");
+         settings.endGroup();
+    }
+    settings.sync();
 }
 
 void MyUmp::onSslError(QNetworkReply *r, QList<QSslError> l)
