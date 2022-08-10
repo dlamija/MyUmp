@@ -1,5 +1,4 @@
 #include "umpsetting.h"
-#include "myump.h"
 #include "ui_umpsetting.h"
 #include <QDebug>
 #include <QSettings>

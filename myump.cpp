@@ -10,6 +10,7 @@
 #include <QSslError>
 #include <QHostInfo>
 #include <QTimer>
+#include <QRegularExpression>
 
 const QString MyUmp::logUMPNETUrl = QString("http://1.1.1.2/ac_portal/login.php");
 const QString MyUmp::umpHostUrl = QString("ump.edu.my");
@@ -74,7 +75,7 @@ void MyUmp::readSettings()
             user->disableOutside = settings.value("week").toBool();
         settings.endGroup();
 
-        qDebug() << "Setting exist " << user->SettingSaved << user->userName << endl;
+        qDebug() << "Setting exist " << user->SettingSaved << user->userName << Qt::endl;
 
     }
 }
@@ -167,7 +168,7 @@ void MyUmp::checkIPChanged()
 void MyUmp::writeSettings(bool save_delete)
 {
     QSettings settings;
-    qDebug() << "save or delete" << save_delete << endl;
+    qDebug() << "save or delete" << save_delete << Qt::endl;
     if (save_delete){
         settings.beginGroup("Login");
             settings.setValue("username",user->userName.toUtf8().toBase64() );
@@ -198,7 +199,7 @@ void MyUmp::onSslError(QNetworkReply *r, QList<QSslError> l)
 
 void MyUmp::checkInFinished(QNetworkReply *reply)
 {
-    qDebug() << "In finish "<< endl;
+    qDebug() << "In finish "<< Qt::endl;
     if(reply->error())
     {
         qDebug() << "ERROR!";
@@ -209,7 +210,7 @@ void MyUmp::checkInFinished(QNetworkReply *reply)
         QString strdata = reply->readAll();
         QTextDocument doc;
         doc.setHtml(strdata);
-        strdata = doc.toPlainText().remove(QRegExp("[\n\t\r]")).trimmed();
+        strdata = doc.toPlainText().remove(QRegularExpression("[\n\t\r]")).trimmed();
         if (strdata.mid(1,1) == ' '){
             strdata = strdata.mid(2,strdata.length());
         }
@@ -259,7 +260,7 @@ void MyUmp::checkOutFinished(QNetworkReply *reply)
         QString strdata = reply->readAll();
         QTextDocument doc;
         doc.setHtml(strdata);
-        strdata = doc.toPlainText().remove(QRegExp("[\n\t\r]")).trimmed();
+        strdata = doc.toPlainText().remove(QRegularExpression("[\n\t\r]")).trimmed();
         if (strdata.mid(1,1) == ' '){
             strdata = strdata.mid(2,strdata.length());
         }
