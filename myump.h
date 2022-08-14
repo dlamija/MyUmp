@@ -35,6 +35,7 @@ private:
     static const QString logUMPNETUrl;
     static const QString umpHostUrl;
     static const QString umpHostIpAddress;
+    static const QRegularExpression re;
 
     bool isCheckedIn;
     bool isInUMP;

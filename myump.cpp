@@ -15,6 +15,7 @@
 const QString MyUmp::logUMPNETUrl = QString("http://1.1.1.2/ac_portal/login.php");
 const QString MyUmp::umpHostUrl = QString("ump.edu.my");
 const QString MyUmp::umpHostIpAddress = QString("172.16.33.26");
+const QRegularExpression MyUmp::re = QRegularExpression("[\n\t\r]");
 
 MyUmp::MyUmp(QWidget *parent) : QWidget(parent)
 {
@@ -260,7 +261,7 @@ void MyUmp::checkOutFinished(QNetworkReply *reply)
         QString strdata = reply->readAll();
         QTextDocument doc;
         doc.setHtml(strdata);
-        strdata = doc.toPlainText().remove(QRegularExpression("[\n\t\r]")).trimmed();
+        strdata = doc.toPlainText().remove(re).trimmed();
         if (strdata.mid(1,1) == ' '){
             strdata = strdata.mid(2,strdata.length());
         }
