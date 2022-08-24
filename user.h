@@ -30,7 +30,7 @@ private slots:
 
 public slots:
     void loginEcomm();
-    void fixJavaIMS();
+    void studentIMS();
     void loginKalam();
     void checkInUMP();
     void checkOutUMP();
